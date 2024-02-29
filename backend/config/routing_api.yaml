@@ -1,0 +1,14 @@
+test_api:
+  path: /testing
+  controller: App\Controller\TestApiController::api
+  methods: GET|POST
+
+list_student_class:
+  path: /classes
+  controller: App\Controller\UserController::getStudentClassListing
+  methods: GET
+
+file_upload:
+  path: /upload
+  controller: App\Controller\SubmissionController::handleFileUpload
+  methods: POST
