@@ -41,6 +41,7 @@ function HomeWorkListing() {
       <div className="accordion" id="accordionExample">
         {homeworks.map((item, index) => (
             <HomeworkItem
+                hwid={item.id}
                 title={item.homework_title}
                 description={item.description}
                 posted={item.posted_date}

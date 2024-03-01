@@ -9,8 +9,10 @@ use Symfony\Component\HttpFoundation\Request;
 
 use App\Entity\StudentClass;
 use App\Entity\Homework;
+
 use Doctrine\ORM\EntityManagerInterface;
 use App\Entity\User;
+use Doctrine\ORM\EntityManager;
 
 use Symfony\Component\Routing\Attribute\Route;
 
@@ -38,6 +40,19 @@ class SubmissionController extends AbstractController
             return $this->json([
                 "message" => $e->getMessage()
             ], 400);
+        }
+    }
+
+    public function isolateHomework(Request $request, EntityManagerInterface $entityManager)
+    {
+        try {
+            $data = json_decode($request->getContent(), true);
+
+            $hwRecord = $entityManager->getRepository(Homework::class)->getHomeworkRecord($data['homeworkId']);
+
+            return $this->json($hwRecord, 200);
+        } catch (\Exception $e) {
+            return $this->json(["message" => $e->getMessage()], 400);
         }
     }
 

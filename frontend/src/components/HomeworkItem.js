@@ -1,4 +1,5 @@
 import { useState, useRef } from "react";
+import { Link } from 'react-router-dom';
 
 function HomeworkItem(props) {
   const targetData = "#" + props.data_target;
@@ -37,9 +38,9 @@ function HomeworkItem(props) {
         <div className="card-body">
                   <h5 className="card-title">{props.title}</h5>
                   <p className="card-text">{ props.description}</p>
-          <a href="#" className="btn btn-primary">
-            Go somewhere
-          </a>
+                  <Link to={`submit/${props.hwid}`} className="btn btn-primary">
+            Click here to sumbit work
+          </Link>
         </div>
               <div className="card-footer text-muted text-center">Date Posted: {props.posted} | Deadline of Submission: {props.deadline }</div>
       </div>

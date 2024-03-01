@@ -24,7 +24,7 @@ root.render(
         <Route path="reference" element={ <Reference />} />
       </Route>   */}
         <Route path="/login" element={<LoginForm />} /> 
-        <Route path="/submit" element={<SubmissionForm />} /> 
+        <Route path="/submit/:homeworkId?" element={<SubmissionForm />} /> 
         <Route path="/create-homework" element={<PostHomework />} />
       <Route path="/register" element={<Register />} />
     </Routes>

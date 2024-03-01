@@ -32,3 +32,8 @@ retrieve_user_class:
   path: /user-registered-class
   controller: App\Controller\UserController::getUserClass
   methods: GET
+
+homework_details:
+  path: /homework
+  controller: App\Controller\SubmissionController::isolateHomework
+  methods: POST

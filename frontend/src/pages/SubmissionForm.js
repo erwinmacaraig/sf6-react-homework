@@ -1,26 +1,87 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import DatePicker from "react-datepicker";
 import MyDropzone from "../components/MyDropzone"
 import NavigationBar from "../components/NavigationBar";
+import { useParams } from 'react-router-dom'
+import LoadingSpinner from "../components/LoadingSpinner";
 
 import "react-datepicker/dist/react-datepicker.css";
 
 function SubmissionForm() {
     const [startDate, setStartDate] = useState(new Date());
+    const { homeworkId } = useParams();
+    const [hwState, setHwState] = useState({
+        "description": "",
+        "submission_deadline": "",
+        "posted_date": "",
+        "homework_title": "",
+        "first_name": "",
+        "family_name": "",
+        "class_title": "" 
+    });
+    const [loading, setLoading] = useState(false);
+    const [error, setError] = useState(null);
+
+
+    const handleHomeworkSubmission = (e) => {
+        e.preventDefault();
+        const submissionDate = document.querySelector('#date-submitted').value; 
+        const submitTitle = document.querySelector('#inputSubmissionTitle').value;
+        const remarks = document.querySelector("#submissionRemarks").value;
+
+        console.log(submissionDate);
+        console.log(submitTitle);
+        console.log(remarks);
+
+
+    }
+
+
+    useEffect(() => { 
+        // setLoading(true);
+        fetch(`http://localhost:8000/api/homework`, {
+            method: 'post',
+            mode: 'cors', 
+            headers: {
+                "Access-Control-Allow-Origin": "*",
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify({homeworkId:homeworkId})
+        })
+        .then((response) => response.json())
+      .then((data) => setHwState(data))
+      .then(() => setLoading(false))
+      .catch(setError);
+    }, [homeworkId]);
+
+    if (loading) {
+    return (
+      <LoadingSpinner />
+    );
+  }
+//   if (error) {
+//     return <pre>{JSON.stringify(error)}</pre>;
+//   }
+  if (!hwState) return null;
   return (
       <>
            <NavigationBar />
       <section className="text-center">
-        <h2 className="fw-bold mb-5">Submit Your Work</h2>
+              <h2 className="fw-bold mb-5">Submit Your Work</h2>
       </section>
       <div className="card mx-4 mx-md-5 shadow-5-strong">
         <div className="card-body py-5 px-md-5">
-          <div className="row d-flex justify-content-center">
-            <p>This will contain the project description</p>
+                  <div className="row d-flex justify-content-center">
+                      <h6>Class: {hwState.class_title}</h6>  
+                      <h6>Instructor: {hwState.first_name} {hwState.family_name}.</h6>
+                      <h6>Homework: {hwState.homework_title}.</h6>
+                      <h6>Date Posted: {hwState.posted_date}.</h6>
+                      <h6>Deadline of Submission: {hwState.submission_deadline}.</h6>
+                      <p>{ hwState.description}</p>
           </div>
         </div>
       </div>
-      <form className="mx-4 mx-md-5 mt-5">
+      <form className="mx-4 mx-md-5 mt-5" onSubmit={handleHomeworkSubmission}>
         <div className="row">
           <div className="col-md-12 mb-4">
             <div className="form-outline">
@@ -73,12 +134,12 @@ function SubmissionForm() {
           <div className="col-md-12 mb-4">
             <div className="form-outline">
               <div className="form-group">
-                <label htmlFor="exampleFormControlTextarea1">
+                <label htmlFor="submissionRemarks">
                   Remarks
                 </label>
                 <textarea
                   className="form-control"
-                  id="exampleFormControlTextarea1"
+                  id="submissionRemarks"
                   rows="3"
                 ></textarea>
               </div>
@@ -86,7 +147,7 @@ function SubmissionForm() {
           </div>
         </div>
 
-        <button type="submit" className="btn btn-primary">
+        <button style={{width: "100%"}} type="submit" className="btn btn-primary">
           Submit
         </button>
       </form>
