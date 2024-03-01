@@ -45,4 +45,30 @@ class UserRepository extends ServiceEntityRepository
     //            ->getOneOrNullResult()
     //        ;
     //    }
+
+    public function listClassHomework($userId)
+    {
+        $conn = $this->getEntityManager()->getConnection();
+        $sql = '
+            SELECT
+                homework.id, 
+                homework.student_class_id,
+                homework.description,
+                homework.submission_deadline,
+                homework.posted_date,
+                homework.homework_title 
+            FROM 
+                homework
+            INNER JOIN
+                user_class 
+            ON
+                homework.student_class_id = user_class.student_class_id
+            WHERE
+                user_class.user_id = ?
+            AND
+                homework.submission_deadline >= current_date();';
+        $stmt = $conn->prepare($sql);
+        $result = $stmt->executeQuery([$userId]);
+        return $result->fetchAllAssociative();
+    }
 }

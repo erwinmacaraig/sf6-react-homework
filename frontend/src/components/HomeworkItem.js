@@ -22,7 +22,7 @@ function HomeworkItem(props) {
             aria-controls={props.data_target}
             onClick={handleShowHideCard}
           >
-            Homework Item {parseInt(props.item) + 1}
+                      {props.title}
           </button>
         </h5>
       </div>
@@ -35,16 +35,13 @@ function HomeworkItem(props) {
         data-parent="#accordionExample"
       >
         <div className="card-body">
-          <h5 className="card-title">Special title treatment</h5>
-          <p className="card-text">
-            With supporting text below as a natural lead-in to additional
-            content.
-          </p>
+                  <h5 className="card-title">{props.title}</h5>
+                  <p className="card-text">{ props.description}</p>
           <a href="#" className="btn btn-primary">
             Go somewhere
           </a>
         </div>
-        <div className="card-footer text-muted text-center">2 days ago</div>
+              <div className="card-footer text-muted text-center">Date Posted: {props.posted} | Deadline of Submission: {props.deadline }</div>
       </div>
     </div>
   );

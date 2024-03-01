@@ -45,4 +45,12 @@ class UserClassRepository extends ServiceEntityRepository
     //            ->getOneOrNullResult()
     //        ;
     //    }
+    public function listUserClass($userId)
+    {
+        $conn = $this->getEntityManager()->getConnection();
+        $sql = 'SELECT student_class.* FROM student_class INNER JOIN user_class ON student_class.id = user_class.student_class_id  WHERE user_class.user_id = ?;';
+        $stmt = $conn->prepare($sql);
+        $result = $stmt->executeQuery([$userId]);
+        return $result->fetchAllAssociative();
+    }
 }

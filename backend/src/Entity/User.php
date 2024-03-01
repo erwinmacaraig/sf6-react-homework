@@ -7,9 +7,11 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Security\Core\User\UserInterface;
+use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
+
 
 #[ORM\Entity(repositoryClass: UserRepository::class)]
-class User implements UserInterface
+class User implements UserInterface, PasswordAuthenticatedUserInterface
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
@@ -28,7 +30,7 @@ class User implements UserInterface
     #[ORM\Column(length: 255)]
     private ?string $passwordHash = null;
 
-    #[ORM\OneToMany(targetEntity: UserRole::class, mappedBy: 'user', orphanRemoval: true)]
+    #[ORM\OneToMany(targetEntity: Role::class, mappedBy: 'user', orphanRemoval: true)]
     private Collection $role;
 
     #[ORM\OneToMany(targetEntity: UserClass::class, mappedBy: 'user')]
@@ -97,6 +99,13 @@ class User implements UserInterface
     {
         return $this->passwordHash;
     }
+    /**
+     * @return string the hashed password for this user
+     */
+    public function getPassword(): string
+    {
+        return $this->passwordHash;
+    }
 
     public function setPasswordHash(string $passwordHash): static
     {
@@ -128,11 +137,11 @@ class User implements UserInterface
         return $this->role;
     }
 
-    public function addRole(UserRole $role): static
+    public function addRole(Role $role): static
     {
         if (!$this->role->contains($role)) {
             $this->role->add($role);
-            $role->setUser($this);
+            // $role->setUser($this);
         }
 
         return $this;

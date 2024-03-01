@@ -45,4 +45,13 @@ class UserRoleRepository extends ServiceEntityRepository
     //            ->getOneOrNullResult()
     //        ;
     //    }
+
+    public function getRole($role)
+    {
+        $conn = $this->getEntityManager()->getConnection();
+        $sql = 'SELECT * FROM role WHERE role = ? LIMIT 1';
+        $stmt = $conn->prepare($sql);
+        $result = $stmt->executeQuery([$role]);
+        return $result->fetchAllAssociative();
+    }
 }

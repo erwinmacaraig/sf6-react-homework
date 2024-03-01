@@ -24,8 +24,8 @@ function SubmissionForm() {
         <div className="row">
           <div className="col-md-12 mb-4">
             <div className="form-outline">
-              <div class="form-group">
-                <label for="date-submitted">Submission Date:</label>
+              <div className="form-group">
+                <label htmlFor="date-submitted">Submission Date:</label>
                               <p>
                                   <DatePicker
       dateFormat="yyyy/MM/dd"
@@ -44,11 +44,11 @@ function SubmissionForm() {
         <div className="row">
           <div className="col-md-12 mb-4">
             <div className="form-outline">
-              <div class="form-group">
-                <label for="inputSubmissionTitle">Submission Title</label>
+              <div className="form-group">
+                <label htmlFor="inputSubmissionTitle">Submission Title</label>
                 <input
                   type="text"
-                  class="form-control"
+                  className="form-control"
                   id="inputSubmissionTitle"
                   aria-describedby="submission Help"
                   placeholder="Enter Title of your Work"
@@ -62,22 +62,22 @@ function SubmissionForm() {
           <div className="col-md-12 mb-4">
                       <div className="form-outline">
                            <label>Upload Here:</label>
-                          <div class="form-group">
+                          <div className="form-group">
                               <MyDropzone />
                           </div>
                       </div>
                   </div>
                   </div>
                       
-        <div class="row">
+        <div className="row">
           <div className="col-md-12 mb-4">
             <div className="form-outline">
-              <div class="form-group">
-                <label for="exampleFormControlTextarea1">
+              <div className="form-group">
+                <label htmlFor="exampleFormControlTextarea1">
                   Remarks
                 </label>
                 <textarea
-                  class="form-control"
+                  className="form-control"
                   id="exampleFormControlTextarea1"
                   rows="3"
                 ></textarea>
@@ -86,7 +86,7 @@ function SubmissionForm() {
           </div>
         </div>
 
-        <button type="submit" class="btn btn-primary">
+        <button type="submit" className="btn btn-primary">
           Submit
         </button>
       </form>

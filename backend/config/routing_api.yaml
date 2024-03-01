@@ -12,3 +12,23 @@ file_upload:
   path: /upload
   controller: App\Controller\SubmissionController::handleFileUpload
   methods: POST
+
+register_student:
+  path: /register-student
+  controller: App\Controller\UserController::register
+  methods: POST
+
+post_homework:
+  path: /post-homework
+  controller: App\Controller\SubmissionController::postHomework
+  methods: POST
+
+list_active_hw:
+  path: /list-class-hw
+  controller: App\Controller\SubmissionController::getAllActiveHomework
+  methods: POST
+
+retrieve_user_class:
+  path: /user-registered-class
+  controller: App\Controller\UserController::getUserClass
+  methods: GET

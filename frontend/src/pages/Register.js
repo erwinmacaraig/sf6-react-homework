@@ -59,7 +59,19 @@ function Register() {
                     <label className="form-label" for="form3Example4">
                       Password
                     </label>
-                  </div>                  
+                                </div>
+                                <div className="form-outline mb-4">
+                                    <select id='student-classes' className="form-select" multiple aria-label="multiple select example">
+  <option disabled>Open this select menu</option>
+  <option value="1">One</option>
+  <option value="2">Two</option>
+  <option value="3">Three</option>
+
+</select>
+                                <label className="form-label" for="student-classes">
+                      Available Classes 
+                    </label>    
+                   </div>              
 
                   <button
                     type="submit"

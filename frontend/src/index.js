@@ -8,7 +8,8 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import App from './App';
 import SubmissionForm from './pages/SubmissionForm';
 import Register  from './pages/Register';
-import LoginForm  from './pages/LoginForm';
+import LoginForm from './pages/LoginForm';
+import PostHomework from './pages/PostHomework';
 
 import reportWebVitals from './reportWebVitals';
 
@@ -23,7 +24,8 @@ root.render(
         <Route path="reference" element={ <Reference />} />
       </Route>   */}
         <Route path="/login" element={<LoginForm />} /> 
-      <Route path="/submit" element={<SubmissionForm />} /> 
+        <Route path="/submit" element={<SubmissionForm />} /> 
+        <Route path="/create-homework" element={<PostHomework />} />
       <Route path="/register" element={<Register />} />
     </Routes>
   </BrowserRouter>
