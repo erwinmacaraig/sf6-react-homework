@@ -50,7 +50,7 @@ class SubmissionController extends AbstractController
 
             $hwRecord = $entityManager->getRepository(Homework::class)->getHomeworkRecord($data['homeworkId']);
 
-            return $this->json($hwRecord, 200);
+            return $this->json($hwRecord[0], 200);
         } catch (\Exception $e) {
             return $this->json(["message" => $e->getMessage()], 400);
         }

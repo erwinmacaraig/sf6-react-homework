@@ -21,8 +21,13 @@ function HomeWorkListing() {
 
     })
       .then((response) => response.json())
-      .then((data) => setHomeworks(data))
-      .then(() => setLoading(false))
+        .then((data) => { 
+            console.log("data received");
+            setHomeworks(data);
+            setLoading(false);
+            console.log(data);
+        })
+    //   .then(() => setLoading(false))
       .catch(setError);
   }, []);
 
@@ -32,7 +37,7 @@ function HomeWorkListing() {
     );
   }
   if (error) {
-    return <pre>{JSON.stringify(error)}</pre>;
+      console.log(error);
   }
   if (!homeworks) return null;
 

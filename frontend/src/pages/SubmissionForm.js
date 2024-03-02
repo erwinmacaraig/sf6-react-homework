@@ -38,7 +38,7 @@ function SubmissionForm() {
 
 
     useEffect(() => { 
-        // setLoading(true);
+        setLoading(true);
         fetch(`http://localhost:8000/api/homework`, {
             method: 'post',
             mode: 'cors', 
@@ -49,8 +49,12 @@ function SubmissionForm() {
             body: JSON.stringify({homeworkId:homeworkId})
         })
         .then((response) => response.json())
-      .then((data) => setHwState(data))
-      .then(() => setLoading(false))
+            .then((data) => {
+                console.log(data);
+                setHwState(data)
+                setLoading(false);
+            })
+    //   .then(() => setLoading(false))
       .catch(setError);
     }, [homeworkId]);
 
@@ -59,9 +63,9 @@ function SubmissionForm() {
       <LoadingSpinner />
     );
   }
-//   if (error) {
-//     return <pre>{JSON.stringify(error)}</pre>;
-//   }
+  if (error) {
+      console.log(error);
+  }
   if (!hwState) return null;
   return (
       <>
@@ -87,7 +91,7 @@ function SubmissionForm() {
             <div className="form-outline">
               <div className="form-group">
                 <label htmlFor="date-submitted">Submission Date:</label>
-                              <p>
+                              
                                   <DatePicker
       dateFormat="yyyy/MM/dd"
       selected={startDate}
@@ -96,7 +100,7 @@ function SubmissionForm() {
                                   id="date-submitted"
                                   disabled
     />
-                </p>
+                
               </div>
             </div>
           </div>
