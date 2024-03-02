@@ -32,6 +32,11 @@ security:
       pattern: ^/api/classes
       security: false
 
+    api:
+      pattern: ^/api
+      stateless: true
+      jwt: ~
+
     main:
       lazy: true
       provider: users
@@ -48,7 +53,8 @@ security:
     - { path: ^/api/login, roles: PUBLIC_ACCESS }
     - { path: ^/api/register-student, roles: PUBLIC_ACCESS }
     - { path: ^/api/classes, roles: PUBLIC_ACCESS }
-    - { path: ^/api, roles: IS_AUTHENTICATED_FULL }
+    # - { path: ^/api, roles: [ROLE_STUDENT, ROLE_TEACHER] }
+    - { path: ^/api, roles: IS_AUTHENTICATED_FULLY }
     # - { path: ^/admin, roles: ROLE_ADMIN }
     # - { path: ^/profile, roles: ROLE_USER }
 

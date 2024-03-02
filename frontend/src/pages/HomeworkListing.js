@@ -14,7 +14,7 @@ function HomeWorkListing() {
         headers: {
             "Access-Control-Allow-Origin": "*",
           "Content-Type": "application/json",
-            "Authorization": localStorage.getItem("token")
+            "Authorization": "Bearer " + localStorage.getItem("token")
          },
         body: JSON.stringify({
             "user":40
