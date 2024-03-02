@@ -6,6 +6,8 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\Request;
+use Lexik\Bundle\JWTAuthenticationBundle\Services\JWTTokenManagerInterface;
+use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 
 use App\Entity\StudentClass;
 use App\Entity\Homework;
@@ -56,15 +58,13 @@ class SubmissionController extends AbstractController
         }
     }
 
-    public function getAllActiveHomework(Request $request, EntityManagerInterface $entityManager)
+    public function getAllActiveHomework(Request $request, EntityManagerInterface $entityManager, TokenStorageInterface $tokenStorageInterface, JWTTokenManagerInterface $jwtManager)
     {
+        $decodedJwtToken = $jwtManager->decode($tokenStorageInterface->getToken());
         try {
             $data = json_decode($request->getContent(), true);
-            $hw = $entityManager->getRepository(User::class)->listClassHomework($data['user']);
-
-            return $this->json($hw, 200, [
-                'Access-Control-Allow-Origin' => 'http://localhost:8000'
-            ]);
+            $hw = $entityManager->getRepository(User::class)->listClassHomework($decodedJwtToken['username']);
+            return $this->json($hw, 200);
         } catch (\Exception $e) {
             return $this->json([
                 "message" => $e->getMessage()

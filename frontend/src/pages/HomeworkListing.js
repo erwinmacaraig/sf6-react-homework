@@ -15,11 +15,7 @@ function HomeWorkListing() {
             "Access-Control-Allow-Origin": "*",
           "Content-Type": "application/json",
             "Authorization": "Bearer " + localStorage.getItem("token")
-         },
-        body: JSON.stringify({
-            "user":40
-        })
-
+         }
     })
       .then((response) => response.json())
         .then((data) => { 
@@ -27,8 +23,7 @@ function HomeWorkListing() {
             setHomeworks(data);
             setLoading(false);
             console.log(data);
-        })
-    //   .then(() => setLoading(false))
+        })    
       .catch(setError);
   }, []);
 
