@@ -4,14 +4,13 @@ namespace App\Controller;
 
 use App\Entity\StudentClass;
 use App\Entity\User;
-use App\Entity\UserRole;
+
 use App\Entity\Role;
 use App\Entity\UserClass;
 
 use App\Repository\StudentClassRepository;
 use App\Repository\UserClassRepository;
 use App\Repository\UserRepository;
-use App\Repository\UserRoleRepository;
 use Symfony\Component\HttpFoundation\Request;
 
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
@@ -29,32 +28,25 @@ class UserController extends AbstractController
         return $this->json($list);
     }
 
-    public function register(Request $request, EntityManagerInterface $entityManager, UserRoleRepository $userRoleRep, UserPasswordHasherInterface $passwordHasher): JsonResponse
+    public function register(Request $request, EntityManagerInterface $entityManager, UserPasswordHasherInterface $passwordHasher): JsonResponse
     {
         try {
             $data = json_decode($request->getContent(), true);
 
 
-            $studentRole = $userRoleRep->getRole('ROLE_STUDENT');
-
             $user = new User();
             $user->setFirstName($data['firstName']);
             $user->setFamilyName($data['familyName']);
             $user->setEmail($data['email']);
+            $user->setUsername($data['email']);
 
             $hashedPassword = $passwordHasher->hashPassword(
                 $user,
                 $data['password']
             );
             $user->setPasswordHash($hashedPassword);
-
-            $theRole = $entityManager->getRepository(Role::class)->find($studentRole[0]['id']);
+            $user->setRoles(['ROLE_STUDENT']);
             $entityManager->persist($user);
-            $userRole = new UserRole();
-            $userRole->setUser($user);
-            $userRole->setRole($theRole);
-            $entityManager->persist($userRole);
-
             $availedClasses = $data['classes'];
             for ($x = 0; $x < count($availedClasses); $x++) {
                 $enrolledClass = new UserClass();

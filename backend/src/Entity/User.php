@@ -24,17 +24,15 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column(length: 255)]
     private ?string $familyName = null;
 
-    #[ORM\Column(length: 100)]
+    #[ORM\Column(length: 100, unique: true)]
     private ?string $email = null;
+
+    #[ORM\Column(length: 180, unique: true)]
+    private ?string $username = null;
 
     #[ORM\Column(length: 255)]
     private ?string $passwordHash = null;
 
-    #[ORM\OneToMany(targetEntity: Role::class, mappedBy: 'user', orphanRemoval: true)]
-    private Collection $role;
-
-    #[ORM\OneToMany(targetEntity: UserClass::class, mappedBy: 'user')]
-    private Collection $subject;
 
     #[ORM\OneToMany(targetEntity: UploadedFile::class, mappedBy: 'user')]
     private Collection $uploadedFiles;
@@ -45,10 +43,13 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\OneToMany(targetEntity: Submission::class, mappedBy: 'user')]
     private Collection $submissions;
 
+    #[ORM\Column]
+    private array $roles = [];
+
     public function __construct()
     {
-        $this->role = new ArrayCollection();
-        $this->subject = new ArrayCollection();
+
+
         $this->uploadedFiles = new ArrayCollection();
         $this->homework = new ArrayCollection();
         $this->submissions = new ArrayCollection();
@@ -95,6 +96,18 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this;
     }
 
+    public function getUsername(): string
+    {
+        return $this->username;
+    }
+
+    public function setUsername(string $username): self
+    {
+        $this->username = $username;
+
+        return $this;
+    }
+
     public function getPasswordHash(): ?string
     {
         return $this->passwordHash;
@@ -116,7 +129,10 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
     public function getRoles(): array
     {
-        return [];
+        $roles = $this->roles;
+        // guarantee every user at least has ROLE_USER
+        $roles[] = 'ROLE_USER';
+        return array_unique($roles);
     }
 
     public function eraseCredentials(): void
@@ -126,68 +142,14 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
     public function getUserIdentifier(): string
     {
-        return " ";
+        return (string) $this->email;
     }
 
-    /**
-     * @return Collection<int, UserRole>
-     */
-    public function getRole(): Collection
-    {
-        return $this->role;
-    }
 
-    public function addRole(Role $role): static
-    {
-        if (!$this->role->contains($role)) {
-            $this->role->add($role);
-            // $role->setUser($this);
-        }
 
-        return $this;
-    }
 
-    public function removeRole(UserRole $role): static
-    {
-        if ($this->role->removeElement($role)) {
-            // set the owning side to null (unless already changed)
-            if ($role->getUser() === $this) {
-                $role->setUser(null);
-            }
-        }
 
-        return $this;
-    }
 
-    /**
-     * @return Collection<int, UserClass>
-     */
-    public function getSubject(): Collection
-    {
-        return $this->subject;
-    }
-
-    public function addSubject(UserClass $subject): static
-    {
-        if (!$this->subject->contains($subject)) {
-            $this->subject->add($subject);
-            $subject->setUser($this);
-        }
-
-        return $this;
-    }
-
-    public function removeSubject(UserClass $subject): static
-    {
-        if ($this->subject->removeElement($subject)) {
-            // set the owning side to null (unless already changed)
-            if ($subject->getUser() === $this) {
-                $subject->setUser(null);
-            }
-        }
-
-        return $this;
-    }
 
     /**
      * @return Collection<int, UploadedFile>
@@ -275,6 +237,13 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
                 $submission->setUser(null);
             }
         }
+
+        return $this;
+    }
+
+    public function setRoles(array $roles): static
+    {
+        $this->roles = $roles;
 
         return $this;
     }

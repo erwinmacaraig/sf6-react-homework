@@ -27,6 +27,7 @@ class AppFixtures extends Fixture
         $user->setFirstName('Erwin');
         $user->setFamilyName('Mcraig');
         $user->setEmail('erwin@test.com');
+        $user->setUsername('erwin@test.com');
         $user->setPasswordHash('PlainPassword');
         $this->addReference('erwin', $user);
         $manager->persist($user);
@@ -36,6 +37,7 @@ class AppFixtures extends Fixture
         $user2->setFirstName('Gel');
         $user2->setFamilyName('Mcraig');
         $user2->setEmail('gel@test.com');
+        $user->setUsername('gel@test.com');
         $user2->setPasswordHash('PlainPassword');
         $this->addReference('gel', $user2);
         $manager->persist($user2);
@@ -45,6 +47,7 @@ class AppFixtures extends Fixture
         $user3->setFirstName('Bam');
         $user3->setFamilyName('Bi');
         $user3->setEmail('bam_bi@test.com');
+        $user->setUsername('bam_bi@test.com');
         $user3->setPasswordHash('PlainPassword');
         $this->addReference('bam', $user3);
         $manager->persist($user3);
@@ -54,6 +57,7 @@ class AppFixtures extends Fixture
         $user4->setFirstName('Dy');
         $user4->setFamilyName('Lan');
         $user4->setEmail('dy_lan@test.com');
+        $user->setUsername('dy_lan@test.com');
         $user4->setPasswordHash('PlainPassword');
         $this->addReference('dylan', $user4);
         $manager->persist($user4);
@@ -106,28 +110,28 @@ class AppFixtures extends Fixture
         $teacher = $this->getReference('teacher_role');
         $student = $this->getReference('student_role');
 
-        $userRole = new UserRole();
-        $userRole->setUser($user1);
-        $userRole->setRole($teacher);
-        $manager->persist($userRole);
-        $manager->flush();
+        // $userRole = new UserRole();
+        // $userRole->setUser($user1);
+        // $userRole->setRole($teacher);
+        // $manager->persist($userRole);
+        // $manager->flush();
 
-        $userRole = new UserRole();
-        $userRole->setUser($user2);
-        $userRole->setRole($teacher);
-        $manager->persist($userRole);
-        $manager->flush();
+        // $userRole = new UserRole();
+        // $userRole->setUser($user2);
+        // $userRole->setRole($teacher);
+        // $manager->persist($userRole);
+        // $manager->flush();
 
-        $userRole = new UserRole();
-        $userRole->setUser($user3);
-        $userRole->setRole($student);
-        $manager->persist($userRole);
-        $manager->flush();
+        // $userRole = new UserRole();
+        // $userRole->setUser($user3);
+        // $userRole->setRole($student);
+        // $manager->persist($userRole);
+        // $manager->flush();
 
-        $userRole = new UserRole();
-        $userRole->setUser($user4);
-        $userRole->setRole($student);
-        $manager->persist($userRole);
-        $manager->flush();
+        // $userRole = new UserRole();
+        // $userRole->setUser($user4);
+        // $userRole->setRole($student);
+        // $manager->persist($userRole);
+        // $manager->flush();
     }
 }

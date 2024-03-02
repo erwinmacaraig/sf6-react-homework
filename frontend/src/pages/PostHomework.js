@@ -131,8 +131,8 @@ function PostHomework() {
                   <div className="row">
           <div className="col-md-12 mb-4">
             <div className="form-outline">
-              <div class="form-group">
-                <label for="inputHomeworkTitle">Homework Title</label>
+              <div className="form-group">
+                <label htmlFor="inputHomeworkTitle">Homework Title</label>
                 <input
                   type="text"
                   className="form-control"
