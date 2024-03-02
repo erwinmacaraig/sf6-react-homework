@@ -28,6 +28,10 @@ security:
       pattern: ^/api/register-student
       security: false
 
+    classes:
+      pattern: ^/api/classes
+      security: false
+
     main:
       lazy: true
       provider: users
@@ -43,6 +47,7 @@ security:
   access_control:
     - { path: ^/api/login, roles: PUBLIC_ACCESS }
     - { path: ^/api/register-student, roles: PUBLIC_ACCESS }
+    - { path: ^/api/classes, roles: PUBLIC_ACCESS }
     - { path: ^/api, roles: IS_AUTHENTICATED_FULL }
     # - { path: ^/admin, roles: ROLE_ADMIN }
     # - { path: ^/profile, roles: ROLE_USER }

@@ -19,10 +19,11 @@ root.render(
     
     <BrowserRouter>    
     <Routes>
-      <Route path="/" element={<App />} />
+      <Route path="/" element={<LoginForm />} />
       {/* <Route path="/fetch" element={<FetchData />}>
         <Route path="reference" element={ <Reference />} />
       </Route>   */}
+        <Route path="/homework" element={<App />} /> 
         <Route path="/login" element={<LoginForm />} /> 
         <Route path="/submit/:homeworkId?" element={<SubmissionForm />} /> 
         <Route path="/create-homework" element={<PostHomework />} />

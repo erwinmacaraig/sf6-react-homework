@@ -13,7 +13,8 @@ function HomeWorkListing() {
         method: 'post',
         headers: {
             "Access-Control-Allow-Origin": "*",
-            "Content-Type": "application/json",
+          "Content-Type": "application/json",
+            "Authorization": localStorage.getItem("token")
          },
         body: JSON.stringify({
             "user":40
