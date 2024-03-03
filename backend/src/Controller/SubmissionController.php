@@ -11,6 +11,7 @@ use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInt
 
 use App\Entity\StudentClass;
 use App\Entity\Homework;
+use App\Entity\Submission;
 
 use Doctrine\ORM\EntityManagerInterface;
 use App\Entity\User;
@@ -54,6 +55,9 @@ class SubmissionController extends AbstractController
             $data = json_decode($request->getContent(), true);
 
             $hwRecord = $entityManager->getRepository(Homework::class)->getHomeworkRecord($data['homeworkId']);
+            if (count($hwRecord) == 0) {
+                return $this->json([], 404);
+            }
 
             return $this->json($hwRecord[0], 200);
         } catch (\Exception $e) {
@@ -90,8 +94,21 @@ class SubmissionController extends AbstractController
         $decodedJwtToken = $jwtManager->decode($tokenStorageInterface->getToken());
         try {
             $data = json_decode($request->getContent(), true);
+            $user = $entityManager->getRepository(User::class)->findOneBy(['email' => $decodedJwtToken['username']]);
+            $homeworkObj = $entityManager->getRepository(Homework::class)->find($data['homework_id']);
 
-            return $this->json([], 200);
+            $submissionObject = new Submission();
+            $submissionObject->setHomework($homeworkObj);
+            $submissionObject->setUser($user);
+            $submissionObject->setDateSubmitted($data['date_submitted']);
+            $submissionObject->setRemarks($data['remarks']);
+            $submissionObject->setTitle($data['title']);
+            $entityManager->persist($submissionObject);
+            $entityManager->flush();
+
+            return $this->json([
+                "status" => "SUCCESS"
+            ], 200);
         } catch (\Exception $e) {
             return $this->json([
                 "message" => $e->getMessage()

@@ -32,6 +32,9 @@ class Submission
     #[ORM\Column(type: Types::TEXT, nullable: true)]
     private ?string $remarks = null;
 
+    #[ORM\Column(length: 255)]
+    private ?string $title = null;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -93,6 +96,18 @@ class Submission
     public function setRemarks(?string $remarks): static
     {
         $this->remarks = $remarks;
+
+        return $this;
+    }
+
+    public function getTitle(): ?string
+    {
+        return $this->title;
+    }
+
+    public function setTitle(string $title): static
+    {
+        $this->title = $title;
 
         return $this;
     }

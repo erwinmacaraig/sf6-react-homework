@@ -30,7 +30,7 @@ final class Version20240302103947 extends AbstractMigration
         $this->addSql('ALTER TABLE homework ADD CONSTRAINT FK_8C600B4EA76ED395 FOREIGN KEY (user_id) REFERENCES user (id)');
         $this->addSql('ALTER TABLE submission ADD CONSTRAINT FK_DB055AF3B203DDE5 FOREIGN KEY (homework_id) REFERENCES homework (id)');
         $this->addSql('ALTER TABLE submission ADD CONSTRAINT FK_DB055AF3A76ED395 FOREIGN KEY (user_id) REFERENCES user (id)');
-        $this->addSql('ALTER TABLE submission ADD CONSTRAINT FK_DB055AF3276973A0 FOREIGN KEY (uploaded_file_id) REFERENCES uploaded_file (id)');
+        // $this->addSql('ALTER TABLE submission ADD CONSTRAINT FK_DB055AF3276973A0 FOREIGN KEY (uploaded_file_id) REFERENCES uploaded_file (id)');
         $this->addSql('ALTER TABLE uploaded_file ADD CONSTRAINT FK_B40DF75DA76ED395 FOREIGN KEY (user_id) REFERENCES user (id)');
         $this->addSql('ALTER TABLE user_class ADD CONSTRAINT FK_F89E2C7A76ED395 FOREIGN KEY (user_id) REFERENCES user (id)');
         $this->addSql('ALTER TABLE user_class ADD CONSTRAINT FK_F89E2C7598B478B FOREIGN KEY (student_class_id) REFERENCES student_class (id)');
@@ -43,7 +43,7 @@ final class Version20240302103947 extends AbstractMigration
         $this->addSql('ALTER TABLE homework DROP FOREIGN KEY FK_8C600B4EA76ED395');
         $this->addSql('ALTER TABLE submission DROP FOREIGN KEY FK_DB055AF3B203DDE5');
         $this->addSql('ALTER TABLE submission DROP FOREIGN KEY FK_DB055AF3A76ED395');
-        $this->addSql('ALTER TABLE submission DROP FOREIGN KEY FK_DB055AF3276973A0');
+        // $this->addSql('ALTER TABLE submission DROP FOREIGN KEY FK_DB055AF3276973A0');
         $this->addSql('ALTER TABLE uploaded_file DROP FOREIGN KEY FK_B40DF75DA76ED395');
         $this->addSql('ALTER TABLE user_class DROP FOREIGN KEY FK_F89E2C7A76ED395');
         $this->addSql('ALTER TABLE user_class DROP FOREIGN KEY FK_F89E2C7598B478B');

@@ -4,10 +4,15 @@ import MyDropzone from "../components/MyDropzone"
 import NavigationBar from "../components/NavigationBar";
 import { useParams } from 'react-router-dom'
 import LoadingSpinner from "../components/LoadingSpinner";
+import ModalAlert from "../components/ModalAlert";
 
 import "react-datepicker/dist/react-datepicker.css";
 
 function SubmissionForm() {
+  const [registrationStatus, setRegistrationStatus] = useState(false);
+  const [alertTitle, setAlertTitle] = useState(null);
+  const [alertMessage, setAlertMessage] = useState(null);
+  const [navigateTo, setNavigateTo] = useState(null);
     const [startDate, setStartDate] = useState(new Date());
     const { homeworkId } = useParams();
     const [hwState, setHwState] = useState({
@@ -24,14 +29,55 @@ function SubmissionForm() {
 
 
     const handleHomeworkSubmission = (e) => {
-        e.preventDefault();
+      e.preventDefault();
+      setLoading(true);
         const submissionDate = document.querySelector('#date-submitted').value; 
         const submitTitle = document.querySelector('#inputSubmissionTitle').value;
         const remarks = document.querySelector("#submissionRemarks").value;
 
         console.log(submissionDate);
         console.log(submitTitle);
-        console.log(remarks);
+      console.log(remarks);
+
+      const submitHwBody = {
+        "homework_id": homeworkId, 
+        "date_submitted": submissionDate,
+        "title": submitTitle,
+        "remarks": remarks
+
+      }
+      
+      fetch('http://localhost:8000/api/process-homework-submission', {
+        mode: 'cors',
+        method: 'post',
+        headers: {
+          "Access-Control-Allow-Origin": "*",
+          "Content-Type": "application/json",
+          "Authorization": "Bearer " + localStorage.getItem("token")
+        },
+        body: JSON.stringify(submitHwBody)
+      })
+        .then((response) => {
+          if (response.status !== 200) {
+            setLoading(false);
+            setAlertTitle("Submission Error");
+            setAlertMessage("There was an error processing your submission. Please contact system administrator");
+            setNavigateTo("/homework");
+            setRegistrationStatus(true);
+          }
+          return response.json();
+        })
+        .then((data) => {
+          setLoading(false);
+          setAlertTitle("Submission Succesful");
+         setAlertMessage("Your submission has been accepted. You will be notified by your instructor.");
+         setNavigateTo("/homework");
+        setRegistrationStatus(true);
+        })
+        .catch((error) => { 
+          setError(error);
+          setLoading(false);
+        });
 
 
     }
@@ -54,8 +100,7 @@ function SubmissionForm() {
                 console.log(data);
                 setHwState(data)
                 setLoading(false);
-            })
-    //   .then(() => setLoading(false))
+            })    
       .catch(setError);
     }, [homeworkId]);
 
@@ -67,10 +112,28 @@ function SubmissionForm() {
   if (error) {
       console.log(error);
   }
-  if (!hwState) return null;
+  if (Object.keys(hwState).length === 0) {
+    return (
+      <>
+        <NavigationBar />
+      <div className="p-5 bg-image"></div>
+      <div className="card mx-4 mx-md-5 shadow-5-strong">
+        <div className="card-body py-5 px-md-5">
+          <div className="row d-flex justify-content-center">
+            <div className="col-lg-8 text-center">
+              <h2 className="fw-bold mb-5">Submit Your Work</h2>
+              <p>There is no posted homework.</p>
+            </div>
+          </div>
+        </div>
+      </div>  
+      </>
+    );
+  }
   return (
       <>
-           <NavigationBar />
+      <NavigationBar />
+      <ModalAlert show={registrationStatus} alertTitle={alertTitle} alertMessage={alertMessage} navigateTo={navigateTo}  />
       <section className="text-center">
               <h2 className="fw-bold mb-5">Submit Your Work</h2>
       </section>

@@ -38,5 +38,10 @@ homework_details:
   controller: App\Controller\SubmissionController::isolateHomework
   methods: POST
 
+process_hw_submission:
+  path: /process-homework-submission
+  controller: App\Controller\SubmissionController::processHomeworkSubmission
+  methods: POST
+
 api_login_check:
   path: /login_check
