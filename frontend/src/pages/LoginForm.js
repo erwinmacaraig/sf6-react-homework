@@ -11,12 +11,26 @@ function LoginForm() {
   const [error, setError] = useState(null);
   
   const navigate = useNavigate();
-   const [registrationStatus, setRegistrationStatus] = useState(false);
+  const [registrationStatus, setRegistrationStatus] = useState(false);
   const [alertTitle, setAlertTitle] = useState(null);
   const [alertMessage, setAlertMessage] = useState(null);
   const [navigateTo, setNavigateTo] = useState(null);
-  
+  const [errors, setErrors] = useState({});
 
+  const [formData, setFormData] = useState({
+    username: "",
+    password: ""
+  });
+
+  const handleInputChange = (e) => {
+    const { name, value } = e.target;
+    console.log(name);
+    // console.log(value);
+    setFormData({
+      ...formData,
+      [name]: value
+    });
+  };
 
   useEffect(() => { 
     localStorage.removeItem('token');
@@ -24,19 +38,17 @@ function LoginForm() {
     localStorage.removeItem('username');
   }, []);
 
+  
+
   const handleLogin = (e) => { 
     e.preventDefault();
-    setLoading(true); 
-    const loginValues = {
-      username: document.querySelector('#email').value,
-      password: document.querySelector('#password').value
-    };
-    console.log(loginValues);
+    if (validateForm()) {
+      setLoading(true); 
 
     fetch('http://localhost:8000/api/login_check', {
       mode: 'cors',
       method: 'post',
-      body: JSON.stringify(loginValues),
+      body: JSON.stringify(formData),
       headers: {
         "Access-Control-Allow-Origin": "*",
         "Content-Type": "application/json",
@@ -66,8 +78,33 @@ function LoginForm() {
         setRegistrationStatus(true);
 
       });
+    } else {
+      console.log(errors);
+    }
+    
     
   }
+
+  const validateForm = () => {
+    let isValid = true;
+    const newErrors = {};
+
+    // Validate email
+    if (!formData.username) {
+      newErrors.username = "Email is required";
+      isValid = false;
+    }
+
+    // Validate password
+    if (!formData.password) {
+      newErrors.password = "Password is required";
+      isValid = false;
+    }
+
+    setErrors(newErrors);
+    return isValid;
+  };
+
   if (loading) {
     return (
       <LoadingSpinner />
@@ -91,20 +128,28 @@ function LoginForm() {
                 </label>
                 <div className="form-outline mb-4">
                   <input
+                    name="username"
                     type="email"
                     id="email"
                     className="form-control"
+                    value={formData.username}
+                    onChange={handleInputChange}
                   />
+                  {errors.username && <div className="error" style={{color: 'red'}}>{errors.username}</div>}
                 </div>
                 <div className="form-outline mb-4">
                   <label className="form-label" htmlFor="password">
                     Password
                   </label>
                   <input
+                    name="password"
                     type="password"
                     id="password"
                     className="form-control"
-                  />
+                  value={formData.password}
+              onChange={handleInputChange}
+            />
+            {errors.password && <div className="error"  style={{color: 'red'}}>{errors.password}</div>}
                 </div>
                 <div className="text-center">
                   <button
