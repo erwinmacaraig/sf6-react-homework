@@ -8,8 +8,11 @@ function NavigationBar() {
 
   const logoutUser = () => { 
     localStorage.removeItem("token");
+    localStorage.removeItem('role');
+    localStorage.removeItem('username');
     navigate("/");
   };
+  const uname = localStorage.getItem('username');
     
     return (
       <nav
@@ -46,7 +49,7 @@ function NavigationBar() {
             >
               <a
                 className="nav-link dropdown-toggle"
-                href="#"
+                href="/homework#"
                 id="navbarDropdownMenuLink"
                 data-toggle="dropdown"
                 aria-haspopup="true"
@@ -58,18 +61,18 @@ function NavigationBar() {
                 className={toggleShow ? "dropdown-menu show" : "dropdown-menu"}
                 aria-labelledby="navbarDropdownMenuLink"
               >
-                <Link className="dropdown-item" to="/submit">
+                { localStorage.getItem('role') === 'ROLE_STDENT' ? <Link className="dropdown-item" to="/submit">
                   Submit Homework
-                </Link>
-                <Link to="/create-homework" className="dropdown-item">
+                </Link> : null}
+                { localStorage.getItem('role') === 'ROLE_TEACHER'? <Link to="/create-homework" className="dropdown-item">
                   Post Homework
-                </Link>
+                </Link> : null }
               </div>
             </li>
           </ul>
         </div>
-        <a href='#'  onClick={logoutUser} className="nav-item mr-md-4 b">
-          Logout
+        Hi { uname }! | <a href='#'  onClick={logoutUser} className="nav-item mr-md-4 b">
+            Logout
         </a>
       </nav>
     );

@@ -10,6 +10,20 @@ function HomeworkItem(props) {
     setToggle(!toggle);
   }
 
+  function SubmitContainer() {
+    if (localStorage.getItem === 'ROLE_TEACHER') {
+      return (
+        <p className="card-text text-end"></p>
+      );
+    } else if (localStorage.getItem === 'ROLE_STUDENT') {
+      return (
+        <p className="card-text text-end"><Link to={`/submit/${props.hwid}`} className="btn btn-primary">
+          Submit
+        </Link></p>
+      );
+    }
+  }
+
   return (
     <div className="card">
       <div className="card-header text-center" id={props.id}>
@@ -37,10 +51,9 @@ function HomeworkItem(props) {
       >
         <div className="card-body">
                   <h5 className="card-title">{props.title}</h5>
-                  <p className="card-text">{ props.description}</p>
-                  <Link to={`/submit/${props.hwid}`} className="btn btn-primary">
-            Click here to sumbit work
-          </Link>
+          <p className="card-text">{props.description}</p>
+          <SubmitContainer />
+                  
         </div>
               <div className="card-footer text-muted text-center">Date Posted: {props.posted} | Deadline of Submission: {props.deadline }</div>
       </div>

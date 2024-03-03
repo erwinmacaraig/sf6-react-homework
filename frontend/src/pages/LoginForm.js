@@ -3,6 +3,8 @@ import { useState, useEffect } from "react";
 import LoadingSpinner from "../components/LoadingSpinner";
 import ModalAlert from "../components/ModalAlert";
 import { useNavigate } from "react-router-dom";
+import { jwtDecode } from "jwt-decode";
+
 function LoginForm() {
 
   const [loading, setLoading] = useState(false);
@@ -18,8 +20,10 @@ function LoginForm() {
 
   useEffect(() => { 
     localStorage.removeItem('token');
+    localStorage.removeItem('role');
+    localStorage.removeItem('username');
   }, []);
-  
+
   const handleLogin = (e) => { 
     e.preventDefault();
     setLoading(true); 
@@ -46,6 +50,10 @@ function LoginForm() {
         console.log(data);
         setLoading(false);
         localStorage.setItem('token', data.token); 
+        const decoded = jwtDecode(data.token);
+        localStorage.setItem('role', decoded.roles[0]);
+        localStorage.setItem('username', decoded.username);
+
         navigate('/homework');
        })
       .catch((error) => { 

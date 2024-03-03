@@ -53,7 +53,10 @@ function PostHomework() {
      }
 
     useEffect(() => {
-        setLoading(true);
+      setLoading(true);
+      if (localStorage.getItem('role') !== 'ROLE_TEACHER') {
+        navigate('/login');
+      }
         fetch('http://localhost:8000/api/user-registered-class', {
             mode: "cors",
             method: 'get',
