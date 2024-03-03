@@ -74,7 +74,7 @@ class SubmissionController extends AbstractController
         $decodedJwtToken = $jwtManager->decode($tokenStorageInterface->getToken());
         try {
             $data = json_decode($request->getContent(), true);
-            $hw = $entityManager->getRepository(User::class)->listClassHomework($decodedJwtToken['username']);
+            $hw = $entityManager->getRepository(User::class)->listClassHomework($decodedJwtToken['username'], $decodedJwtToken['roles'][0]);
             return $this->json($hw, 200);
         } catch (\Exception $e) {
             return $this->json([

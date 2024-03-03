@@ -33,8 +33,6 @@ class UserController extends AbstractController
     {
         try {
             $data = json_decode($request->getContent(), true);
-
-
             $user = new User();
             $user->setFirstName($data['firstName']);
             $user->setFamilyName($data['familyName']);
@@ -46,7 +44,7 @@ class UserController extends AbstractController
                 $data['password']
             );
             $user->setPasswordHash($hashedPassword);
-            $user->setRoles(['ROLE_STUDENT']);
+            $user->setRoles([$data['role']]);
             $entityManager->persist($user);
             $availedClasses = $data['classes'];
             for ($x = 0; $x < count($availedClasses); $x++) {

@@ -59,23 +59,58 @@ class UserRepository extends ServiceEntityRepository implements UserLoaderInterf
     //        ;
     //    }
 
-    public function listClassHomework($username)
+    public function listClassHomework($username, $role)
     {
         $conn = $this->getEntityManager()->getConnection();
-        $sql = "
+        $sql = null;
+        if ($role == 'ROLE_TEACHER') {
+            $sql = "
                 SELECT
                     homework.id, 
                     homework.student_class_id,
                     homework.description,
                     homework.submission_deadline,
                     homework.posted_date,
-                    homework.homework_title 
+                    homework.homework_title,
+                    student_class.class_title 
                 FROM 
                     homework
                 INNER JOIN
                     user_class 
                 ON
                     homework.student_class_id = user_class.student_class_id
+                INNER JOIN
+					student_class 
+				ON
+					student_class.id = homework.student_class_id
+    			INNER JOIN
+    				user ON user.id = user_class.user_id
+                WHERE
+                    user.username = ?
+                AND
+                    JSON_EXTRACT(roles, '$[0]') = 'ROLE_TEACHER'
+                ORDER BY
+                    student_class.class_title DESC, homework.posted_date DESC;";
+        } else {
+            $sql = "
+                SELECT
+                    homework.id, 
+                    homework.student_class_id,
+                    homework.description,
+                    homework.submission_deadline,
+                    homework.posted_date,
+                    homework.homework_title,
+                    student_class.class_title 
+                FROM 
+                    homework
+                INNER JOIN
+                    user_class 
+                ON
+                    homework.student_class_id = user_class.student_class_id
+                INNER JOIN
+					student_class 
+				ON
+					student_class.id = homework.student_class_id
     			INNER JOIN
     				user ON user.id = user_class.user_id
                 WHERE
@@ -83,7 +118,10 @@ class UserRepository extends ServiceEntityRepository implements UserLoaderInterf
                 AND
                     homework.submission_deadline >= current_date()
                 AND
-                    JSON_EXTRACT(roles, '$[0]') = 'ROLE_STUDENT';";
+                    JSON_EXTRACT(roles, '$[0]') = 'ROLE_STUDENT'
+                ORDER BY
+                    student_class.class_title DESC, homework.posted_date DESC;";
+        }
         $stmt = $conn->prepare($sql);
         $result = $stmt->executeQuery([$username]);
         return $result->fetchAllAssociative();

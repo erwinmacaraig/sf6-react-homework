@@ -138,7 +138,7 @@ function SubmissionForm() {
           {
             return (
               <>
-                <div class="alert alert-warning" role="alert">
+                <div className="alert alert-warning" role="alert">
           You already have submitted your work last {hwState.date_submitted}
         </div>
         

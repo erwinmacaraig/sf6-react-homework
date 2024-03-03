@@ -35,7 +35,7 @@ function HomeWorkListing() {
   if (error) {
       console.log(error);
   }
-  if (homeworks.length == 0) {
+  if (homeworks.length === 0) {
     return (
       <>
       <div className="p-5 bg-image"></div>
@@ -59,7 +59,8 @@ function HomeWorkListing() {
       <div className="accordion" id="accordionExample">
         {homeworks.map((item, index) => (
             <HomeworkItem
-                hwid={item.id}
+            hwid={item.id}
+            subject={ item.class_title }
                 title={item.homework_title}
                 description={item.description}
                 posted={item.posted_date}

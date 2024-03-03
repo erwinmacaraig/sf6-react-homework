@@ -23,7 +23,7 @@ function HomeworkItem(props) {
             aria-controls={props.data_target}
             onClick={handleShowHideCard}
           >
-                      {props.title}
+                      {props.subject} - {props.title}
           </button>
         </h5>
       </div>
