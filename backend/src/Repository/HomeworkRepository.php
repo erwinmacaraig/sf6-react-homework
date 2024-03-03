@@ -45,7 +45,7 @@ class HomeworkRepository extends ServiceEntityRepository
     //            ->getOneOrNullResult()
     //        ;
     //    }
-    public function getHomeworkRecord($homeworkId)
+    public function getHomeworkRecord($homeworkId, $studentId)
     {
         $conn = $this->getEntityManager()->getConnection();
         $sql = "SELECT
@@ -53,7 +53,10 @@ class HomeworkRepository extends ServiceEntityRepository
                 user.id,
                 user.first_name,
                 user.family_name,
-                student_class.class_title
+                student_class.class_title,
+                submission.id as submission_id,
+                submission.date_submitted,
+                submission.homework_id as submitted_to_homework_id
              FROM 
                 homework
             INNER JOIN
@@ -64,13 +67,17 @@ class HomeworkRepository extends ServiceEntityRepository
                 student_class
             ON
                 student_class.id = homework.student_class_id
+            LEFT JOIN
+                submission
+            ON
+                (submission.homework_id = homework.id AND submission.user_id = ?)
             WHERE   
                 homework.id = ?
             AND
                 JSON_EXTRACT(user.roles, '$[0]') = 'ROLE_TEACHER'";
 
         $stmt = $conn->prepare($sql);
-        $result = $stmt->executeQuery([$homeworkId]);
+        $result = $stmt->executeQuery([$studentId, $homeworkId]);
         return $result->fetchAllAssociative();
     }
 }

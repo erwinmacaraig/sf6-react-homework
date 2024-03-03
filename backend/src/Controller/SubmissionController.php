@@ -49,15 +49,19 @@ class SubmissionController extends AbstractController
         }
     }
 
-    public function isolateHomework(Request $request, EntityManagerInterface $entityManager)
+    public function isolateHomework(Request $request, EntityManagerInterface $entityManager, TokenStorageInterface $tokenStorageInterface, JWTTokenManagerInterface $jwtManager)
     {
         try {
             $data = json_decode($request->getContent(), true);
-
-            $hwRecord = $entityManager->getRepository(Homework::class)->getHomeworkRecord($data['homeworkId']);
+            $decodedJwtToken = $jwtManager->decode($tokenStorageInterface->getToken());
+            $student = $entityManager->getRepository(User::class)->findOneBy(['username' => $decodedJwtToken['username']]);
+            $hwRecord = $entityManager->getRepository(Homework::class)->getHomeworkRecord($data['homeworkId'], $student->getID());
             if (count($hwRecord) == 0) {
                 return $this->json([], 404);
             }
+
+
+
 
             return $this->json($hwRecord[0], 200);
         } catch (\Exception $e) {
@@ -100,7 +104,7 @@ class SubmissionController extends AbstractController
             $submissionObject = new Submission();
             $submissionObject->setHomework($homeworkObj);
             $submissionObject->setUser($user);
-            $submissionObject->setDateSubmitted($data['date_submitted']);
+            $submissionObject->setDateSubmitted(new \DateTime($data['date_submitted']));
             $submissionObject->setRemarks($data['remarks']);
             $submissionObject->setTitle($data['title']);
             $entityManager->persist($submissionObject);

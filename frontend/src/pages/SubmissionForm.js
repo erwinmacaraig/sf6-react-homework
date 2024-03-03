@@ -22,7 +22,10 @@ function SubmissionForm() {
         "homework_title": "",
         "first_name": "",
         "family_name": "",
-        "class_title": "" 
+        "class_title": "" ,
+        "date_submitted": null,
+        "submission_id": null, 
+        "submitted_to_homework_id": null
     });
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState(null);
@@ -69,10 +72,19 @@ function SubmissionForm() {
         })
         .then((data) => {
           setLoading(false);
-          setAlertTitle("Submission Succesful");
+          if (data.code === 401) {
+                setAlertTitle(data.message);
+                setAlertMessage("Your session has expired. Please login again");
+                setNavigateTo("/login");
+                
+          } else {
+            setAlertTitle("Submission Succesful");
          setAlertMessage("Your submission has been accepted. You will be notified by your instructor.");
          setNavigateTo("/homework");
-        setRegistrationStatus(true);
+        
+          }
+          setRegistrationStatus(true);
+          
         })
         .catch((error) => { 
           setError(error);
@@ -95,15 +107,54 @@ function SubmissionForm() {
             },
             body: JSON.stringify({homeworkId:homeworkId})
         })
-        .then((response) => response.json())
+          .then((response) => { 
+            if (response.status !== 200) { 
+                setAlertTitle('Server Error');
+                setAlertMessage("Contact system administrator for assistance");
+                setNavigateTo("/homework");
+                setRegistrationStatus(true);
+            }
+            return response.json();
+          })
             .then((data) => {
-                console.log(data);
-                setHwState(data)
-                setLoading(false);
+              console.log(data);
+              setLoading(false);
+              if (data.code === 401) {
+                setAlertTitle(data.message);
+                setAlertMessage("Your session has expired. Please login again");
+                setNavigateTo("/login");
+                setRegistrationStatus(true);
+              } else {
+                setHwState(data);
+              }
+                
+                
             })    
       .catch(setError);
     }, [homeworkId]);
 
+  function RenderControl(){ 
+    if (hwState.submission_id)
+          {
+            return (
+              <>
+                <div class="alert alert-warning" role="alert">
+          You already have submitted your work last {hwState.date_submitted}
+        </div>
+        
+              </>
+            );
+          } else {
+            return (
+              <>
+                <button style={{width: "100%"}} type="submit" className="btn btn-primary">
+          Submit
+        </button>
+              </>
+            )
+           }
+  }
+  
     if (loading) {
     return (
       <LoadingSpinner />
@@ -214,10 +265,7 @@ function SubmissionForm() {
             </div>
           </div>
         </div>
-
-        <button style={{width: "100%"}} type="submit" className="btn btn-primary">
-          Submit
-        </button>
+        <RenderControl />
       </form>
     </>
   );
