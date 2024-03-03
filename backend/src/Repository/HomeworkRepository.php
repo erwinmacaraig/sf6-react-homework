@@ -48,14 +48,26 @@ class HomeworkRepository extends ServiceEntityRepository
     public function getHomeworkRecord($homeworkId)
     {
         $conn = $this->getEntityManager()->getConnection();
-        $sql = "SELECT homework.*, user.id, user.first_name, user.family_name, student_class.class_title FROM homework INNER JOIN user
-ON homework.user_id =user.id
-INNER JOIN user_role ON user_role.user_id = user.id
-INNER JOIN role ON role.id = user_role.role_id 
-INNER JOIN student_class ON student_class.id = homework.student_class_id
-  WHERE 
-  role = 'ROLE_TEACHER' AND
-  homework.id = ?";
+        $sql = "SELECT
+                homework.*,
+                user.id,
+                user.first_name,
+                user.family_name,
+                student_class.class_title
+             FROM 
+                homework
+            INNER JOIN
+                user
+            ON
+                homework.user_id =user.id
+            INNER JOIN
+                student_class
+            ON
+                student_class.id = homework.student_class_id
+            WHERE   
+                homework.id = ?
+            AND
+                JSON_EXTRACT(user.roles, '$[0]') = 'ROLE_TEACHER'";
 
         $stmt = $conn->prepare($sql);
         $result = $stmt->executeQuery([$homeworkId]);

@@ -38,7 +38,7 @@ function HomeworkItem(props) {
         <div className="card-body">
                   <h5 className="card-title">{props.title}</h5>
                   <p className="card-text">{ props.description}</p>
-                  <Link to={`submit/${props.hwid}`} className="btn btn-primary">
+                  <Link to={`/submit/${props.hwid}`} className="btn btn-primary">
             Click here to sumbit work
           </Link>
         </div>

@@ -62,7 +62,7 @@ class UserRepository extends ServiceEntityRepository implements UserLoaderInterf
     public function listClassHomework($username)
     {
         $conn = $this->getEntityManager()->getConnection();
-        $sql = '
+        $sql = "
                 SELECT
                     homework.id, 
                     homework.student_class_id,
@@ -81,7 +81,9 @@ class UserRepository extends ServiceEntityRepository implements UserLoaderInterf
                 WHERE
                     user.username = ?
                 AND
-                    homework.submission_deadline >= current_date();';
+                    homework.submission_deadline >= current_date()
+                AND
+                    JSON_EXTRACT(roles, '$[0]') = 'ROLE_STUDENT';";
         $stmt = $conn->prepare($sql);
         $result = $stmt->executeQuery([$username]);
         return $result->fetchAllAssociative();

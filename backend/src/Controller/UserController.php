@@ -14,7 +14,8 @@ use App\Repository\UserRepository;
 use Symfony\Component\HttpFoundation\Request;
 
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
-
+use Lexik\Bundle\JWTAuthenticationBundle\Services\JWTTokenManagerInterface;
+use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Doctrine\ORM\EntityManagerInterface;
@@ -70,10 +71,12 @@ class UserController extends AbstractController
         }
     }
 
-    public function getUserClass(Request $request, EntityManagerInterface $entityManager)
+    public function getUserClass(Request $request, EntityManagerInterface $entityManager, TokenStorageInterface $tokenStorageInterface, JWTTokenManagerInterface $jwtManager)
     {
         try {
-            $userId = $request->query->get('user');
+            $decodedJwtToken = $jwtManager->decode($tokenStorageInterface->getToken());
+            $user = $entityManager->getRepository(User::class)->findOneBy(['email' => $decodedJwtToken['username']]);
+            $userId = $user->getID();
             $userRegistereClasses = $entityManager->getRepository(UserClass::class)->listUserClass($userId);
 
             return $this->json($userRegistereClasses, 200);

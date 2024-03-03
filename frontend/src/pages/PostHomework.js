@@ -19,22 +19,22 @@ function PostHomework() {
         console.log(selectRef.current.value);        
         console.log(descriptionRef.current.value)
         console.log(document.querySelector('#dedDate').value);
-        console.log(document.querySelector('#inputHomeworkTitle').value);
-        console.log('user is ' + 22);
+        console.log(document.querySelector('#inputHomeworkTitle').value);       
 
         setLoading(true);
         fetch('http://localhost:8000/api/post-homework', {
             mode: 'cors',
             method: 'post',
             headers: {
-                "Content-Type": "application/json"
+              "Content-Type": "application/json",
+              "Authorization": "Bearer " + localStorage.getItem("token")
             },
             body: JSON.stringify({
                 title: document.querySelector('#inputHomeworkTitle').value,
                 description: descriptionRef.current.value,
                 deadline: document.querySelector('#dedDate').value,
                 student_class: selectRef.current.value,
-                user: 22
+               
             })
         })
             .then((response) => response.json())
@@ -44,7 +44,7 @@ function PostHomework() {
                 // selectRef.current.value = classList[0]['id'];
                 setStartDate(new Date());
                 // descriptionRef.current.value = '';
-                document.querySelector('#inputHomeworkTitle').value = '';
+                // document.querySelector('#inputHomeworkTitle').value = '';
                 
 
             })
@@ -54,12 +54,13 @@ function PostHomework() {
 
     useEffect(() => {
         setLoading(true);
-        fetch(`http://localhost:8000/api/user-registered-class?` + new URLSearchParams({ user: 22 }), {
+        fetch('http://localhost:8000/api/user-registered-class', {
             mode: "cors",
             method: 'get',
             headers: {
                 "Access-Control-Allow-Origin": "*",
-                "Content-Type": "application/json",
+              "Content-Type": "application/json",
+                "Authorization": "Bearer " + localStorage.getItem("token")
             }
         })
             .then((response) => response.json())
@@ -77,7 +78,25 @@ function PostHomework() {
         navigate("/"); 
         console.log("ERROR", error);
     
-    } 
+  }
+  if (classList.length === 0) {
+    return (
+      <>
+        <NavigationBar />
+        <div className="p-5 bg-image"></div>
+        <div className="card mx-4 mx-md-5 shadow-5-strong">
+          <div className="card-body py-5 px-md-5">
+            <div className="row d-flex justify-content-center">
+              <div className="col-lg-8 text-center">
+                <h2 className="fw-bold mb-5">Post A New Homework</h2>
+                <p>There is no assigned classes for you to teach.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </>
+    );
+  }
     
     return (
         <>

@@ -21,9 +21,10 @@ use Symfony\Component\Routing\Attribute\Route;
 class SubmissionController extends AbstractController
 {
 
-    public function postHomework(Request $request, EntityManagerInterface $entityManager)
+    public function postHomework(Request $request, EntityManagerInterface $entityManager, TokenStorageInterface $tokenStorageInterface, JWTTokenManagerInterface $jwtManager)
     {
         try {
+            $decodedJwtToken = $jwtManager->decode($tokenStorageInterface->getToken());
             $data = json_decode($request->getContent(), true);
             $postHomework = new Homework();
             $postHomework->setHomeworkTitle($data['title']);
@@ -32,7 +33,9 @@ class SubmissionController extends AbstractController
             $currentDateTime = new \DateTime('now');
             $postHomework->setPostedDate($currentDateTime);
             $postHomework->setStudentClass($entityManager->getRepository(StudentClass::class)->find($data['student_class']));
-            $postHomework->setUser($entityManager->getRepository(User::class)->find($data['user']));
+            $user = $entityManager->getRepository(User::class)->findOneBy(['username' => $decodedJwtToken['username']]);
+
+            $postHomework->setUser($user);
             $entityManager->persist($postHomework);
             $entityManager->flush();
             return $this->json([
@@ -80,6 +83,20 @@ class SubmissionController extends AbstractController
             "message" => "OK",
             "items" => count($_FILES)
         ]);
+    }
+
+    public function processHomeworkSubmission(Request $request, EntityManagerInterface $entityManager, TokenStorageInterface $tokenStorageInterface, JWTTokenManagerInterface $jwtManager): JsonResponse
+    {
+        $decodedJwtToken = $jwtManager->decode($tokenStorageInterface->getToken());
+        try {
+            $data = json_decode($request->getContent(), true);
+
+            return $this->json([], 200);
+        } catch (\Exception $e) {
+            return $this->json([
+                "message" => $e->getMessage()
+            ], 400);
+        }
     }
 
     private function getUploadDir()

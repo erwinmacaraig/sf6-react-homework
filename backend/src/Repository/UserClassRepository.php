@@ -48,7 +48,22 @@ class UserClassRepository extends ServiceEntityRepository
     public function listUserClass($userId)
     {
         $conn = $this->getEntityManager()->getConnection();
-        $sql = 'SELECT student_class.* FROM student_class INNER JOIN user_class ON student_class.id = user_class.student_class_id  WHERE user_class.user_id = ?;';
+        $sql = "SELECT
+                    student_class.*
+                FROM
+                    student_class
+                INNER JOIN
+                    user_class
+                ON
+                    student_class.id = user_class.student_class_id
+                INNER JOIN
+                    user
+                ON
+                    user_class.user_id = user.id
+                WHERE
+                    user_class.user_id = ?
+                AND
+                    JSON_EXTRACT(user.roles, '$[0]') = 'ROLE_TEACHER';";
         $stmt = $conn->prepare($sql);
         $result = $stmt->executeQuery([$userId]);
         return $result->fetchAllAssociative();

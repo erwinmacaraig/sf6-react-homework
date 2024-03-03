@@ -1,15 +1,22 @@
 import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
+import { useNavigate } from "react-router-dom";
 
 function NavigationBar() {
-    const [toggleShow, setToggleShow] = useState(false);
+  const [toggleShow, setToggleShow] = useState(false);
+  const navigate = useNavigate();
+
+  const logoutUser = () => { 
+    localStorage.removeItem("token");
+    navigate("/");
+  };
     
     return (
       <nav
         className="navbar navbar-expand-lg navbar-light mb-4"
         style={{ backgroundColor: "#e3f2fd", padding: "15px 30px" }}
       >
-        <Link className="navbar-brand" to="/">
+        <Link className="navbar-brand" to="/homework">
           Home
         </Link>
 
@@ -61,9 +68,9 @@ function NavigationBar() {
             </li>
           </ul>
         </div>
-        <Link to="/login" className="nav-item mr-md-4">
-          Login
-        </Link>
+        <a href='#'  onClick={logoutUser} className="nav-item mr-md-4 b">
+          Logout
+        </a>
       </nav>
     );
 }

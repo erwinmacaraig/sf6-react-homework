@@ -1,5 +1,5 @@
 import { Link } from "react-router-dom";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import LoadingSpinner from "../components/LoadingSpinner";
 import ModalAlert from "../components/ModalAlert";
 import { useNavigate } from "react-router-dom";
@@ -13,7 +13,13 @@ function LoginForm() {
   const [alertTitle, setAlertTitle] = useState(null);
   const [alertMessage, setAlertMessage] = useState(null);
   const [navigateTo, setNavigateTo] = useState(null);
+  
 
+
+  useEffect(() => { 
+    localStorage.removeItem('token');
+  }, []);
+  
   const handleLogin = (e) => { 
     e.preventDefault();
     setLoading(true); 
