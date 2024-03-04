@@ -27,6 +27,9 @@ class UploadedFile
     #[ORM\JoinColumn(nullable: false)]
     private ?User $user = null;
 
+    #[ORM\Column(nullable: true)]
+    private ?int $homework_id = null;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -76,6 +79,18 @@ class UploadedFile
     public function setUser(?User $user): static
     {
         $this->user = $user;
+
+        return $this;
+    }
+
+    public function getHomeworkId(): ?int
+    {
+        return $this->homework_id;
+    }
+
+    public function setHomeworkId(?int $homework_id): static
+    {
+        $this->homework_id = $homework_id;
 
         return $this;
     }

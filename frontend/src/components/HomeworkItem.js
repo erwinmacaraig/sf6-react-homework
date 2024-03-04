@@ -11,11 +11,11 @@ function HomeworkItem(props) {
   }
 
   function SubmitContainer() {
-    if (localStorage.getItem === 'ROLE_TEACHER') {
+    if (localStorage.getItem('role') === 'ROLE_TEACHER') {
       return (
         <p className="card-text text-end"></p>
       );
-    } else if (localStorage.getItem === 'ROLE_STUDENT') {
+    } else if (localStorage.getItem('role') === 'ROLE_STUDENT') {
       return (
         <p className="card-text text-end"><Link to={`/submit/${props.hwid}`} className="btn btn-primary">
           Submit

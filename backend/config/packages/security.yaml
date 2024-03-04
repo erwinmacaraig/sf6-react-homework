@@ -32,6 +32,10 @@ security:
       pattern: ^/api/classes
       security: false
 
+    tests:
+      pattern: ^/api/test-upload
+      security: false
+
     api:
       pattern: ^/api
       stateless: true

@@ -1,9 +1,10 @@
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useNavigate } from "react-router-dom";
 
 function NavigationBar() {
   const [toggleShow, setToggleShow] = useState(false);
+  
   const navigate = useNavigate();
 
   const logoutUser = () => { 
@@ -12,6 +13,8 @@ function NavigationBar() {
     localStorage.removeItem('username');
     navigate("/");
   };
+
+  
   const uname = localStorage.getItem('username');
     
     return (
@@ -49,7 +52,6 @@ function NavigationBar() {
             >
               <a
                 className="nav-link dropdown-toggle"
-                href="/homework#"
                 id="navbarDropdownMenuLink"
                 data-toggle="dropdown"
                 aria-haspopup="true"
@@ -61,8 +63,9 @@ function NavigationBar() {
                 className={toggleShow ? "dropdown-menu show" : "dropdown-menu"}
                 aria-labelledby="navbarDropdownMenuLink"
               >
-                { localStorage.getItem('role') === 'ROLE_STDENT' ? <Link className="dropdown-item" to="/submit">
-                  Submit Homework
+                
+                { localStorage.getItem('role') === 'ROLE_STUDENT' ? <Link className="dropdown-item" to="/homework">
+                  List Homework
                 </Link> : null}
                 { localStorage.getItem('role') === 'ROLE_TEACHER'? <Link to="/create-homework" className="dropdown-item">
                   Post Homework

@@ -43,5 +43,15 @@ process_hw_submission:
   controller: App\Controller\SubmissionController::processHomeworkSubmission
   methods: POST
 
+test_upload:
+  path: /test-upload
+  controller: App\Controller\SubmissionController::testFileUpload
+  methods: POST
+
+upload:
+  path: /upload-homework
+  controller: App\Controller\SubmissionController::handleFileUpload
+  methods: POST
+
 api_login_check:
   path: /login_check

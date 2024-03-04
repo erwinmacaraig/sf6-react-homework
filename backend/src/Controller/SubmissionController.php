@@ -12,6 +12,7 @@ use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInt
 use App\Entity\StudentClass;
 use App\Entity\Homework;
 use App\Entity\Submission;
+use App\Entity\UploadedFile;
 
 use Doctrine\ORM\EntityManagerInterface;
 use App\Entity\User;
@@ -83,14 +84,29 @@ class SubmissionController extends AbstractController
         }
     }
 
-    public function handleFileUpload(Request $request): JsonResponse
+    public function handleFileUpload(Request $request, EntityManagerInterface $entityManager, TokenStorageInterface $tokenStorageInterface, JWTTokenManagerInterface $jwtManager): JsonResponse
     {
-        $data = json_decode($request->getContent(), true);
+        try {
+            $data = json_decode($request->getContent(), true);
+            $decodedJwtToken = $jwtManager->decode($tokenStorageInterface->getToken());
+            $student = $entityManager->getRepository(User::class)->findOneBy(['username' => $decodedJwtToken['username']]);
 
-        return $this->json([
-            "message" => "OK",
-            "items" => count($_FILES)
-        ]);
+            file_put_contents($this->getUploadDir() . '/' . $student->getID() . '_' . $data['homework'] . '_' . uniqid() . '_' . $data['name'], base64_decode($data['f']));
+            $uploadedFileObj = new UploadedFile();
+            $uploadedFileObj->setUser($student);
+            $uploadedFileObj->setFileTitle($student->getID() . '_' . $data['homework'] . '_' . uniqid() . '_' . $data['name']);
+            $uploadedFileObj->setOriginalFilename($data['name']);
+            $uploadedFileObj->setHomeworkId($data['homework']);
+            $uploadedFileObj->setDateUploaded(new \DateTime('now'));
+            $entityManager->persist($uploadedFileObj);
+            $entityManager->flush();
+
+            return $this->json(['message' => "SUCCESS"]);
+        } catch (\Exception $e) {
+            return $this->json([
+                "message" => $e->getMessage()
+            ], 400);
+        }
     }
 
     public function processHomeworkSubmission(Request $request, EntityManagerInterface $entityManager, TokenStorageInterface $tokenStorageInterface, JWTTokenManagerInterface $jwtManager): JsonResponse
@@ -113,6 +129,19 @@ class SubmissionController extends AbstractController
             return $this->json([
                 "status" => "SUCCESS"
             ], 200);
+        } catch (\Exception $e) {
+            return $this->json([
+                "message" => $e->getMessage()
+            ], 400);
+        }
+    }
+
+    public function testFileUpload(Request $request)
+    {
+        try {
+            $data = json_decode($request->getContent(), true);
+            file_put_contents($this->getUploadDir() . '/' . uniqid() . '_' . $data['name'], base64_decode($data['f']));
+            return $this->json(['message' => "SUCCESS"]);
         } catch (\Exception $e) {
             return $this->json([
                 "message" => $e->getMessage()
