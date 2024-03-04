@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import DatePicker from "react-datepicker";
 import Dropzone from 'react-dropzone';
-import MyDropzone from "../components/MyDropzone"
+
 import NavigationBar from "../components/NavigationBar";
 import { useParams } from 'react-router-dom'
 import LoadingSpinner from "../components/LoadingSpinner";
@@ -30,15 +30,15 @@ function SubmissionForm() {
   });
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
+  const [formErrors, setFormErrors] = useState({});
 
   const [filesToUpload, setFilesTopload] = useState([]);
-  const displayFiles = (thefiles) => {
-    let fnames = [];
-    fnames = thefiles.map((file) => {
-      return file.name;
-    });
 
-  }
+  const [formData, setFormData] = useState({
+    title: "",
+    remarks: ""
+  });
+  
   function ListFiles() {
     const fileList = filesToUpload.map(file => {
 
@@ -55,24 +55,44 @@ function SubmissionForm() {
   const processFilesToUpload = (acceptedFiles) => {
     setFilesTopload(acceptedFiles);
   }
+  const handleInputChange = (e) => {
+    const { name, value } = e.target;    
+    setFormData({
+      ...formData,
+      [name]: value
+    });
+  };
+  const validateForm = () => {
+    let isValid = true;
+    const newErrors = {};
+
+    
+    if (!formData.title) {
+      newErrors.title = "Please provide a title for your work";
+      isValid = false;
+    }
+
+    // Validate password
+    if (!formData.remarks) {
+      newErrors.remarks = "Provide a content for your submission.";
+      isValid = false;
+    }
+
+    setFormErrors(newErrors);
+    return isValid;
+  };
 
   const handleHomeworkSubmission = (e) => {
     e.preventDefault();
-    setLoading(true);
+
+    if (validateForm()) {
+setLoading(true);
     const submissionDate = document.querySelector('#date-submitted').value;
-    const submitTitle = document.querySelector('#inputSubmissionTitle').value;
-    const remarks = document.querySelector("#submissionRemarks").value;
-
-    console.log(submissionDate);
-    console.log(submitTitle);
-    console.log(remarks);
-
     const submitHwBody = {
       "homework_id": homeworkId,
       "date_submitted": submissionDate,
-      "title": submitTitle,
-      "remarks": remarks
-
+      "title": formData.title,
+      "remarks": formData.remarks
     }
 
     fetch('http://localhost:8000/api/process-homework-submission', {
@@ -138,9 +158,7 @@ function SubmissionForm() {
       }
 
     });
-
-
-
+    } // end form validation
   }
 
 
@@ -275,12 +293,15 @@ function SubmissionForm() {
               <div className="form-group">
                 <label htmlFor="inputSubmissionTitle">Submission Title</label>
                 <input
+                  name="title"
                   type="text"
                   className="form-control"
                   id="inputSubmissionTitle"
                   aria-describedby="submission Help"
                   placeholder="Enter Title of your Work"
+                  onChange={handleInputChange}
                 />
+                {formErrors.title && <div className="error"  style={{color: 'red'}}>{formErrors.title}</div>}
               </div>
             </div>
           </div>
@@ -321,10 +342,13 @@ function SubmissionForm() {
                   Remarks
                 </label>
                 <textarea
+                  onChange={handleInputChange}
+                  name="remarks"
                   className="form-control"
                   id="submissionRemarks"
                   rows="3"
                 ></textarea>
+                {formErrors.remarks && <div className="error"  style={{color: 'red'}}>{formErrors.remarks}</div>}
               </div>
             </div>
           </div>
