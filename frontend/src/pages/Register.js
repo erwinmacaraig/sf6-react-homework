@@ -10,10 +10,71 @@ function Register() {
   const [alertTitle, setAlertTitle] = useState(null);
   const [alertMessage, setAlertMessage] = useState(null);
   const [navigateTo, setNavigateTo] = useState(null);
+  const [formErrors, setFormErrors] = useState({});
+
+  const [formData, setFormData] = useState({
+    firstName: "",
+    familyName: "",
+    email: "",
+    password: ""
+  });
+  const handleInputChange = (e) => {
+    const { name, value } = e.target;
+    setFormData({
+      ...formData,
+      [name]: value
+    });
+    
+    console.log(formData)
+      
+  }; 
+   
+  
+   const validateForm = () => {
+    let isValid = true;
+    const newErrors = {};
+
+    
+    if (!formData.firstName) {
+      newErrors.firstName = "Please provide your name";
+      isValid = false;
+    }
+
+    
+    if (!formData.familyName) {
+      newErrors.familyName = "Please provide your family name.";
+      isValid = false;
+     }
+     
+     if (!formData.email) {
+      newErrors.email = "Email is required.";
+      isValid = false;
+     }
+     
+     if (!formData.password || formData.password.length < 6) {
+      newErrors.password = "Password length should be greater than 5 characters";
+      isValid = false;
+     }
+     
+     const choosenClasses =
+      document.querySelector("#student-classes").selectedOptions;
+    const values = Array.from(choosenClasses).map(({ value }) =>
+      parseInt(value)
+     );
+     if (values.length === 0) {
+      newErrors.subjects = "Please choose atleast one subject";
+      isValid = false;
+     }
+     
+
+    setFormErrors(newErrors);
+    return isValid;
+  };
 
   const handleRegistrationSubmit = (e) => {
     e.preventDefault();
-    setLoading(true);
+    if (validateForm()) {
+      setLoading(true);
     console.log(document.querySelector("#student-classes").selectedOptions);
     const choosenClasses =
       document.querySelector("#student-classes").selectedOptions;
@@ -59,6 +120,7 @@ function Register() {
         setNavigateTo("/register");
         setRegistrationStatus(true);
       });
+    }
   };
 
   useEffect(() => {
@@ -101,38 +163,50 @@ function Register() {
                   <div className="col-md-6 mb-4">
                     <div className="form-outline">
                       <input
+                        name="firstName"
+                        onChange={handleInputChange}
                         type="text"
                         id="firstName"
                         className="form-control"
                       />
                       <label className="form-label" htmlFor="firstName">
-                        First name
+                        {formErrors.firstName && <span className="error"  style={{color: 'red'}}>{formErrors.firstName}</span>} First name
                       </label>
                     </div>
                   </div>
-                  <div className="col-md-6 mb-4">
-                    <div className="form-outline">
+                  <div className="col-md-6 mb-4">                    
+                    <div className="form-outline">                      
                       <input
+                        name="familyName"
+                        onChange={handleInputChange}
                         type="text"
                         id="familyName"
                         className="form-control"
                       />
                       <label className="form-label" htmlFor="familyName">
-                        Last name
+                        {formErrors.familyName && <span className="error"  style={{color: 'red'}}>{formErrors.familyName}</span>} Last name
                       </label>
                     </div>
-                  </div>
+                  </div>                  
                 </div>
+                
 
                 <div className="form-outline mb-4">
-                  <input type="email" id="email" className="form-control" />
+                  {formErrors.email && <div className="error"  style={{color: 'red'}}>{formErrors.email}</div>}
+                  <input
+                    name="email"
+                    onChange={handleInputChange}
+                    type="email" id="email" className="form-control" />
                   <label className="form-label" htmlFor="email">
                     Email address
                   </label>
                 </div>
 
                 <div className="form-outline mb-4">
+                  {formErrors.password && <div className="error"  style={{color: 'red'}}>{formErrors.password}</div>}
                   <input
+                    name="password"
+                    onChange={handleInputChange}
                     type="password"
                     id="password"
                     className="form-control"
@@ -177,12 +251,14 @@ function Register() {
                       >
                         Teacher
                       </label>
-                    </div>{" "}
+                    </div>
                   </div>
                 </div>
 
                 <div className="form-outline mb-4">
                   <select
+                    name="subjects"
+                    onChange={handleInputChange}
                     id="student-classes"
                     className="form-select"
                     multiple
@@ -196,6 +272,7 @@ function Register() {
                       );
                     })}
                   </select>
+                  {formErrors.subjects && <div className="error"  style={{color: 'red'}}>{formErrors.subjects}</div>}
                   <label className="form-label" htmlFor="student-classes">
                     Available Classes
                   </label>
